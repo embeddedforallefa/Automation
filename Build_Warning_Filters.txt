@@ -1,0 +1,363 @@
+Public Enum suppliers
+AutosarCenter = 1
+Elektrobit
+SoftwarePlatform
+ST
+End Enum
+Function Build_Warnings_Filters(Optional Sheetname As Worksheet, Optional supplier As String, Optional Functionality As String) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+'Filter for Supplier , Functionality
+
+QReport.Worksheets("Compiler and Assembler Warnings").Range("A:W").AutoFilter Field:=9, Criteria1:=Functionality
+
+QReport.Worksheets("Compiler and Assembler Warnings").Range("A:W").AutoFilter Field:=12, Criteria1:=supplier
+
+    With QReport.Worksheets("Compiler and Assembler Warnings")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("Compiler and Assembler Warnings").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+
+Build_Warnings_Filters = count
+
+End Function
+Function Build_Warnings_Functionality_Only(Optional Sheetname As Worksheet, Optional Functionality As String) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+QReport.Worksheets("Compiler and Assembler Warnings").ShowAllData
+
+'Filter for Functionality
+
+QReport.Worksheets("Compiler and Assembler Warnings").Range("A:W").AutoFilter Field:=9, Criteria1:=Functionality
+    
+    With QReport.Worksheets("Compiler and Assembler Warnings")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("Compiler and Assembler Warnings").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+    
+Build_Warnings_Functionality_Only = count
+
+End Function
+
+Function Build_Warnings_Total(Optional Sheetname1 As Worksheet, Optional Supplier1 As String, Optional Functionality1 As String) As Integer
+
+Build_Warnings_Total = Build_Warnings_Filters(Sheetname1, Supplier1, Functionality1)
+
+End Function
+Sub Build_Warnings_Total_All(Optional Sheetname As Worksheet, Optional FuncTableRange As String)
+
+Call Build_Warnings_Supplier_Total(Sheetname, FuncTableRange, AutosarCenter)
+Call Build_Warnings_Supplier_Total(Sheetname, FuncTableRange, Elektrobit)
+Call Build_Warnings_Supplier_Total(Sheetname, FuncTableRange, SoftwarePlatform)
+Call Build_Warnings_Supplier_Total(Sheetname, FuncTableRange, ST)
+
+End Sub
+Sub Build_Warnings_Supplier_Total(Optional Sheetname As Worksheet, Optional FuncTableRange As String, Optional SupplierNo As supplier)
+
+Dim RowNumberMax As Long
+RowNumberMax = 53
+Dim myRange As Range
+Dim Temp As Long
+Static RowNumber As Long
+RowNumber = 2 + SupplierNo
+Set myRange = Sheetname.Range(FuncTableRange)
+    Do While RowNumber < RowNumberMax - 5
+        Temp = Temp + myRange.Cells(RowNumber - 1, 1)
+        RowNumber = RowNumber + 5
+    Loop
+myRange.Cells(RowNumberMax + SupplierNo - 1, 1).Value = Temp
+End Sub
+Function Build_Warnings_Functionality(Optional Sheetname As Worksheet, Optional Functionality2 As String, Optional Subfunctionality2 As Variant)
+
+Sheetname.Range("AZ3").Value = Build_Warnings_Total(Sheetname, "AutosarCenter", Functionality2)
+Sheetname.Range("AZ4").Value = Build_Warnings_Total(Sheetname, "Elektrobit", Functionality2)
+Sheetname.Range("AZ5").Value = Build_Warnings_Total(Sheetname, "SoftwarePlatform", Functionality2)
+Sheetname.Range("AZ6").Value = Build_Warnings_Total(Sheetname, "ST", Functionality2)
+
+Sheetname.Range("AZ2").Value = Sheetname.Range("AZ3") + Sheetname.Range("AZ4") + Sheetname.Range("AZ5") + Sheetname.Range("AZ6")
+
+Build_Warnings_Functionality = Sheetname.Range("AZ2").Value
+
+End Function
+
+Function Build_Warnings_Module(Optional Sheetname As Worksheet, Optional FuncTableRange As String, Optional FuncTableOffset As Integer)
+
+Dim ColumnNumber As Long
+Dim CurrentColumnNumber As Long
+Dim TempColumnNumber As Long
+Dim RowNumberMax As Long
+CurrentColumnNumber = Sheetname.Range(FuncTableRange).Column
+TempColumnNumber = Sheetname.Range("AZ2:AZ6").Column
+ColumnNumber = TempColumnNumber - CurrentColumnNumber + 1
+RowNumberMax = 6 + FuncTableOffset
+
+Dim myRange As Range
+Dim RowNumber As Long
+RowNumber = 2 + FuncTableOffset
+    Set myRange = Sheetname.Range(FuncTableRange)
+    For RowNumber = RowNumber To RowNumberMax - 1
+        myRange.Cells(RowNumber, 1).Value = myRange.Cells(RowNumber - FuncTableOffset, ColumnNumber)
+    Next RowNumber
+    
+End Function
+
+Sub CalculateBuildWarnings(Optional Sheetname As Worksheet, Optional TableRange As String, Optional ColumnName As String)
+
+Dim SubFun As Variant
+
+SubFun = Array("Code", "Configuration")
+
+Dim CICDTableOffset As Integer
+Dim CORETableOffset As Integer
+Dim MMGTTableOffset As Integer
+Dim EBCOMTableOffset As Integer
+Dim IOTableOffset As Integer
+Dim MEMTableOffset As Integer
+Dim RTETableOffset As Integer
+Dim SYSTEMTableOffset As Integer
+Dim COMGWTableOffset As Integer
+Dim TempCell As String
+
+CICDTableOffset = 0
+CORETableOffset = 5
+MMGTTableOffset = 10
+EBCOMTableOffset = 15
+IOTableOffset = 20
+MEMTableOffset = 25
+RTETableOffset = 30
+SYSTEMTableOffset = 35
+COMGWTableOffset = 40
+
+TempCell = ColumnName & "2"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A2"))
+Call Build_Warnings_Module(Sheetname, TableRange, CICDTableOffset)
+
+TempCell = ColumnName & "7"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A7"))
+Call Build_Warnings_Module(Sheetname, TableRange, CORETableOffset)
+
+TempCell = ColumnName & "12"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A12"))
+Call Build_Warnings_Module(Sheetname, TableRange, MMGTTableOffset)
+
+TempCell = ColumnName & "17"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A17"))
+Call Build_Warnings_Module(Sheetname, TableRange, EBCOMTableOffset)
+
+TempCell = ColumnName & "22"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A22"))
+Call Build_Warnings_Module(Sheetname, TableRange, IOTableOffset)
+
+TempCell = ColumnName & "27"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A27"))
+Call Build_Warnings_Module(Sheetname, TableRange, MEMTableOffset)
+
+TempCell = ColumnName & "32"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A32"))
+Call Build_Warnings_Module(Sheetname, TableRange, RTETableOffset)
+
+TempCell = ColumnName & "37"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A37"))
+Call Build_Warnings_Module(Sheetname, TableRange, SYSTEMTableOffset)
+
+TempCell = ColumnName & "42"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality(Sheetname, Sheetname.Range("A42"))
+Call Build_Warnings_Module(Sheetname, TableRange, COMGWTableOffset)
+
+TempCell = ColumnName & "49"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality_Only(Sheetname, Sheetname.Range("A49"))
+
+TempCell = ColumnName & "50"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality_Only(Sheetname, Sheetname.Range("A50"))
+
+TempCell = ColumnName & "51"
+Sheetname.Range(TempCell).Value = Build_Warnings_Functionality_Only(Sheetname, Sheetname.Range("A51"))
+
+Call Build_Warnings_Total_All(Sheetname, TableRange)
+End Sub
+
+Sub CalculateBuildWarnings_BCM2M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet7.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_BCM_2M"
+TableRange = Sheet7.Range("A62")
+ColumnName = Sheet7.Range("A64")
+Call CalculateBuildWarnings(Sheet7, TableRange, ColumnName)
+
+Application.Goto Sheet7.Range("N1"), False
+
+Call DrawChart(Sheet7, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_BCM4M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet8.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_BCM_4M"
+TableRange = Sheet8.Range("A62")
+ColumnName = Sheet8.Range("A64")
+Call CalculateBuildWarnings(Sheet8, TableRange, ColumnName)
+
+Application.Goto Sheet8.Range("Z1"), False
+
+Call DrawChart(Sheet8, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_BCM10M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet14.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_BCM_10M"
+TableRange = Sheet14.Range("A62")
+ColumnName = Sheet14.Range("A64")
+Call CalculateBuildWarnings(Sheet14, TableRange, ColumnName)
+
+Application.Goto Sheet14.Range("Z1"), False
+
+Call DrawChart(Sheet14, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_COMGW2M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet9.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_COMGW_2M"
+TableRange = Sheet9.Range("A62")
+ColumnName = Sheet9.Range("A64")
+Call CalculateBuildWarnings(Sheet9, TableRange, ColumnName)
+
+Application.Goto Sheet9.Range("N1"), False
+
+Call DrawChart(Sheet9, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_COMGW4M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet10.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_COMGW_4M"
+TableRange = Sheet10.Range("A62")
+ColumnName = Sheet10.Range("A64")
+Call CalculateBuildWarnings(Sheet10, TableRange, ColumnName)
+
+Application.Goto Sheet10.Range("Z1"), False
+
+Call DrawChart(Sheet10, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_COMGW6M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet11.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_COMGW_6M"
+TableRange = Sheet11.Range("A62")
+ColumnName = Sheet11.Range("A64")
+Call CalculateBuildWarnings(Sheet11, TableRange, ColumnName)
+
+Application.Goto Sheet11.Range("Z1"), False
+
+Call DrawChart(Sheet11, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateBuildWarnings_COMGW10M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet12.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "Warnings_COMGW_10M"
+TableRange = Sheet12.Range("A62")
+ColumnName = Sheet12.Range("A64")
+Call CalculateBuildWarnings(Sheet12, TableRange, ColumnName)
+
+Application.Goto Sheet12.Range("N1"), False
+
+Call DrawChart(Sheet12, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+

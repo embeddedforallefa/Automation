@@ -1,0 +1,21 @@
+Sub Calculate_MISRALINT_BuildWarnings_All()
+
+Dim Temp As String
+
+Call CalculateLINTMISRA_BCM2M
+Call CalculateLINTMISRA_BCM4M
+Call CalculateLINTMISRA_BCM10M
+Call CalculateLINTMISRA_COMGW2M
+Call CalculateLINTMISRA_COMGW4M
+Call CalculateLINTMISRA_COMGW6M
+Call CalculateLINTMISRA_COMGW10M
+
+Call CalculateBuildWarnings_BCM2M
+Call CalculateBuildWarnings_BCM4M
+Call CalculateBuildWarnings_BCM10M
+Call CalculateBuildWarnings_COMGW2M
+Call CalculateBuildWarnings_COMGW4M
+Call CalculateBuildWarnings_COMGW6M
+Call CalculateBuildWarnings_COMGW10M
+
+End Sub

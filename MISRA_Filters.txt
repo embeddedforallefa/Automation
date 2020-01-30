@@ -1,0 +1,444 @@
+Public Enum supplier
+AutosarCenter = 1
+Elektrobit
+SoftwarePlatform
+ST
+End Enum
+Function MISRA_Filters(Optional Sheetname As Worksheet, Optional supplier As String, Optional Functionality As String, Optional Subfunctionality As Variant) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+'Filter for Supplier , Functionality, subfunctionality and blank unjustfied MISRA warnings
+
+QReport.Worksheets("MISRA & Internal Coding Rules").Range("A:W").AutoFilter Field:=12, Criteria1:=Functionality
+
+QReport.Worksheets("MISRA & Internal Coding Rules").Range("A:W").AutoFilter Field:=13, Criteria1:=Subfunctionality(0), Operator:=xlOr, Criteria2:=Subfunctionality(1)
+
+QReport.Worksheets("MISRA & Internal Coding Rules").Range("A:W").AutoFilter Field:=15, Criteria1:=supplier
+
+QReport.Worksheets("MISRA & Internal Coding Rules").Range("A:W").AutoFilter Field:=19, Criteria1:="="
+
+    'Count the selected number of rows
+    With QReport.Worksheets("MISRA & Internal Coding Rules")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("MISRA & Internal Coding Rules").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+    
+MISRA_Filters = count
+
+End Function
+Function MISRA_Functionality_Only(Optional Sheetname As Worksheet, Optional Functionality As String) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+QReport.Worksheets("MISRA & Internal Coding Rules").ShowAllData
+
+'Filter for Functionality only
+
+QReport.Worksheets("MISRA & Internal Coding Rules").Range("A:W").AutoFilter Field:=12, Criteria1:=Functionality
+    
+    'Count the selected number of rows
+    With QReport.Worksheets("MISRA & Internal Coding Rules")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("MISRA & Internal Coding Rules").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+    
+MISRA_Functionality_Only = count
+
+End Function
+
+Function LINT_PC_Filters(Optional Sheetname As Worksheet, Optional supplier As String, Optional Functionality As String, Optional Subfunctionality As Variant) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+'Filter for Supplier , Functionality, subfunctionality and blank unjustfied LINT warnings
+
+QReport.Worksheets("Other PC-Lint Messages").Range("A:W").AutoFilter Field:=11, Criteria1:=Functionality
+
+QReport.Worksheets("Other PC-Lint Messages").Range("A:W").AutoFilter Field:=12, Criteria1:=Subfunctionality(0), Operator:=xlOr, Criteria2:=Subfunctionality(1)
+
+QReport.Worksheets("Other PC-Lint Messages").Range("A:W").AutoFilter Field:=14, Criteria1:=supplier
+
+QReport.Worksheets("Other PC-Lint Messages").Range("A:W").AutoFilter Field:=18, Criteria1:="="
+
+    'Count the selected number of rows
+    With QReport.Worksheets("Other PC-Lint Messages")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("Other PC-Lint Messages").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+
+LINT_PC_Filters = count
+
+End Function
+Function LINT_PC_Functionality_Only(Optional Sheetname As Worksheet, Optional Functionality As String) As Integer
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheetname.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim count As Integer
+
+QReport.Worksheets("Other PC-Lint Messages").ShowAllData
+
+'Filter for Functionality only
+
+QReport.Worksheets("Other PC-Lint Messages").Range("A:W").AutoFilter Field:=11, Criteria1:=Functionality
+    
+    'Count the selected number of rows
+    With QReport.Worksheets("Other PC-Lint Messages")
+        Set rnData = .UsedRange
+        With rnData
+            QReport.Worksheets("Other PC-Lint Messages").Select
+            For Each rngarea In .SpecialCells(xlCellTypeVisible).Areas
+                lcount = lcount + rngarea.Rows.count
+            Next
+             count = lcount - 1
+        End With
+    End With
+    
+LINT_PC_Functionality_Only = count
+
+End Function
+
+Function MISRA_LINT_Total(Optional Sheetname1 As Worksheet, Optional Supplier1 As String, Optional Functionality1 As String, Optional Subfunctionality1 As Variant) As Integer
+
+MISRA_LINT_Total = MISRA_Filters(Sheetname1, Supplier1, Functionality1, Subfunctionality1) + LINT_PC_Filters(Sheetname1, Supplier1, Functionality1, Subfunctionality1)
+
+End Function
+
+Function MISRA_LINT_Total_Functionality_Only(Optional Sheetname1 As Worksheet, Optional Functionality1 As String) As Integer
+
+MISRA_LINT_Total_Functionality_Only = MISRA_Functionality_Only(Sheetname1, Functionality1) + LINT_PC_Functionality_Only(Sheetname1, Functionality1)
+
+End Function
+
+Sub MISRA_LINT_Total_All(Optional Sheetname As Worksheet, Optional FuncTableRange As String)
+
+Call MISRA_LINT_Supplier_Total(Sheetname, FuncTableRange, AutosarCenter)
+Call MISRA_LINT_Supplier_Total(Sheetname, FuncTableRange, Elektrobit)
+Call MISRA_LINT_Supplier_Total(Sheetname, FuncTableRange, SoftwarePlatform)
+Call MISRA_LINT_Supplier_Total(Sheetname, FuncTableRange, ST)
+
+End Sub
+Sub MISRA_LINT_Supplier_Total(Optional Sheetname As Worksheet, Optional FuncTableRange As String, Optional SupplierNo As supplier)
+
+Dim RowNumberMax As Long
+RowNumberMax = 53
+Dim myRange As Range
+Dim Temp As Long
+Static RowNumber As Long
+RowNumber = 2 + SupplierNo
+Set myRange = Sheetname.Range(FuncTableRange)
+    Do While RowNumber < RowNumberMax - 5
+        Temp = Temp + myRange.Cells(RowNumber - 1, 1)
+        RowNumber = RowNumber + 5
+    Loop
+myRange.Cells(RowNumberMax + SupplierNo - 1, 1).Value = Temp
+End Sub
+Function MISRA_LINT_Functionality(Optional Sheetname As Worksheet, Optional Functionality2 As String, Optional Subfunctionality2 As Variant)
+'function to calculate sum of errors by all suppliers for each Functionality
+Sheetname.Range("AZ3").Value = MISRA_LINT_Total(Sheetname, "AutosarCenter", Functionality2, Subfunctionality2)
+Sheetname.Range("AZ4").Value = MISRA_LINT_Total(Sheetname, "Elektrobit", Functionality2, Subfunctionality2)
+Sheetname.Range("AZ5").Value = MISRA_LINT_Total(Sheetname, "SoftwarePlatform", Functionality2, Subfunctionality2)
+Sheetname.Range("AZ6").Value = MISRA_LINT_Total(Sheetname, "ST", Functionality2, Subfunctionality2)
+
+Sheetname.Range("AZ2").Value = Sheetname.Range("AZ3") + Sheetname.Range("AZ4") + Sheetname.Range("AZ5") + Sheetname.Range("AZ6")
+
+MISRA_LINT_Functionality = Sheetname.Range("AZ2").Value
+
+End Function
+
+Function MISRA_LINT_Module(Optional Sheetname As Worksheet, Optional FuncTableRange As String, Optional FuncTableOffset As Integer)
+
+Dim ColumnNumber As Long
+Dim CurrentColumnNumber As Long
+Dim TempColumnNumber As Long
+Dim RowNumberMax As Long
+CurrentColumnNumber = Sheetname.Range(FuncTableRange).Column
+'AZ2:AZ6 is range to store temp data of each functionality
+TempColumnNumber = Sheetname.Range("AZ2:AZ6").Column
+ColumnNumber = TempColumnNumber - CurrentColumnNumber + 1
+RowNumberMax = 6 + FuncTableOffset
+
+Dim myRange As Range
+Dim RowNumber As Long
+RowNumber = 2 + FuncTableOffset
+    Set myRange = Sheetname.Range(FuncTableRange)
+    For RowNumber = RowNumber To RowNumberMax - 1
+        myRange.Cells(RowNumber, 1).Value = myRange.Cells(RowNumber - FuncTableOffset, ColumnNumber)
+    Next RowNumber
+    
+End Function
+
+Sub CalculateLINTMISRA(Optional Sheetname As Worksheet, Optional TableRange As String, Optional ColumnName As String)
+
+Dim SubFun As Variant
+
+SubFun = Array("Code", "Configuration")
+
+Dim CICDTableOffset As Integer
+Dim CORETableOffset As Integer
+Dim DIAGTableOffset As Integer
+Dim EBCOMTableOffset As Integer
+Dim IOTableOffset As Integer
+Dim MEMTableOffset As Integer
+Dim RTETableOffset As Integer
+Dim SYSTEMTableOffset As Integer
+Dim COMGWTableOffset As Integer
+Dim TempCell As String
+
+CICDTableOffset = 0
+CORETableOffset = 5
+DIAGTableOffset = 10
+EBCOMTableOffset = 15
+IOTableOffset = 20
+MEMTableOffset = 25
+RTETableOffset = 30
+SYSTEMTableOffset = 35
+COMGWTableOffset = 40
+
+TempCell = ColumnName & "2"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A2"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, CICDTableOffset)
+
+TempCell = ColumnName & "7"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A7"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, CORETableOffset)
+
+TempCell = ColumnName & "12"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A12"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, DIAGTableOffset)
+
+TempCell = ColumnName & "17"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A17"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, EBCOMTableOffset)
+
+TempCell = ColumnName & "22"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A22"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, IOTableOffset)
+
+TempCell = ColumnName & "27"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A27"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, MEMTableOffset)
+
+TempCell = ColumnName & "32"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A32"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, RTETableOffset)
+
+TempCell = ColumnName & "37"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A37"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, SYSTEMTableOffset)
+
+TempCell = ColumnName & "42"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Functionality(Sheetname, Sheetname.Range("A42"), SubFun)
+Call MISRA_LINT_Module(Sheetname, TableRange, COMGWTableOffset)
+
+TempCell = ColumnName & "47"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Total_Functionality_Only(Sheetname, Sheetname.Range("A47"))
+
+TempCell = ColumnName & "49"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Total_Functionality_Only(Sheetname, Sheetname.Range("A49"))
+
+TempCell = ColumnName & "50"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Total_Functionality_Only(Sheetname, Sheetname.Range("A50"))
+
+TempCell = ColumnName & "51"
+Sheetname.Range(TempCell).Value = MISRA_LINT_Total_Functionality_Only(Sheetname, Sheetname.Range("A51"))
+
+Call MISRA_LINT_Total_All(Sheetname, TableRange)
+End Sub
+
+Sub CalculateLINTMISRA_BCM2M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet1.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_BCM_2M"
+TableRange = Sheet1.Range("A62")
+ColumnName = Sheet1.Range("A64")
+Call CalculateLINTMISRA(Sheet1, TableRange, ColumnName)
+
+Application.Goto Sheet1.Range("P1"), False
+
+Call DrawChart(Sheet1, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_BCM4M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet2.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_BCM_4M"
+TableRange = Sheet2.Range("A62")
+ColumnName = Sheet2.Range("A64")
+Call CalculateLINTMISRA(Sheet2, TableRange, ColumnName)
+
+Application.Goto Sheet2.Range("Z1"), False
+
+Call DrawChart(Sheet2, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_BCM10M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet13.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_BCM_10M"
+TableRange = Sheet13.Range("A62")
+ColumnName = Sheet13.Range("A64")
+Call CalculateLINTMISRA(Sheet13, TableRange, ColumnName)
+
+Application.Goto Sheet13.Range("Z1"), False
+
+Call DrawChart(Sheet13, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_COMGW2M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet3.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_COMGW_2M"
+TableRange = Sheet3.Range("A62")
+ColumnName = Sheet3.Range("A64")
+Call CalculateLINTMISRA(Sheet3, TableRange, ColumnName)
+
+Application.Goto Sheet3.Range("N1"), False
+
+Call DrawChart(Sheet3, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_COMGW4M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet4.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_COMGW_4M"
+TableRange = Sheet4.Range("A62")
+ColumnName = Sheet4.Range("A64")
+Call CalculateLINTMISRA(Sheet4, TableRange, ColumnName)
+
+Application.Goto Sheet4.Range("Z1"), False
+
+Call DrawChart(Sheet4, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_COMGW6M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet5.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_COMGW_6M"
+TableRange = Sheet5.Range("A62")
+ColumnName = Sheet5.Range("A64")
+Call CalculateLINTMISRA(Sheet5, TableRange, ColumnName)
+
+Application.Goto Sheet5.Range("Z1"), False
+
+Call DrawChart(Sheet5, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub
+
+Sub CalculateLINTMISRA_COMGW10M()
+'Select the workbook to filter
+Dim QReport As Workbook
+Dim WorkbookPath As String
+WorkbookPath = Sheet6.Range("A66")
+Set QReport = Workbooks.Open(WorkbookPath, True, True)
+
+Dim FileName As String
+Dim TableRange As String
+Dim ColumnName As String
+FileName = "MISRA_LINT_COMGW_10M"
+TableRange = Sheet6.Range("A62")
+ColumnName = Sheet6.Range("A64")
+Call CalculateLINTMISRA(Sheet6, TableRange, ColumnName)
+
+Application.Goto Sheet6.Range("N1"), False
+
+Call DrawChart(Sheet6, FileName, ColumnName)
+
+QReport.Close False
+
+End Sub

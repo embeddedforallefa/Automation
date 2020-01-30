@@ -1,0 +1,190 @@
+Sub DrawChart(Optional Sheetname As Worksheet, Optional FileName As String, Optional ColumnName As String)
+
+Sheetname.Shapes.AddChart.Select
+
+Dim TempSeriesName As String
+Dim TempSeriesValue As String
+'Chart for All data for each module
+With ActiveChart
+    ActiveChart.ChartType = xlLineMarkers
+    ActiveChart.HasTitle = True
+    ActiveChart.ChartTitle.Text = FileName & " All"
+   
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$2"
+    TempSeriesValue = "=" & FileName & "!$B$2:$" & ColumnName & "$2"
+    ActiveChart.FullSeriesCollection(1).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(1).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$7"
+    TempSeriesValue = "=" & FileName & "!$B$7:$" & ColumnName & "$7"
+    ActiveChart.FullSeriesCollection(2).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(2).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$12"
+    TempSeriesValue = "=" & FileName & "!$B$12:$" & ColumnName & "$12"
+    ActiveChart.FullSeriesCollection(3).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(3).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$17"
+    TempSeriesValue = "=" & FileName & "!$B$17:$" & ColumnName & "$17"
+    ActiveChart.FullSeriesCollection(4).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(4).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$22"
+    TempSeriesValue = "=" & FileName & "!$B$22:$" & ColumnName & "$22"
+    ActiveChart.FullSeriesCollection(5).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(5).Values = TempSeriesValue
+
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$27"
+    TempSeriesValue = "=" & FileName & "!$B$27:$" & ColumnName & "$27"
+    ActiveChart.FullSeriesCollection(6).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(6).Values = TempSeriesValue
+    
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$32"
+    TempSeriesValue = "=" & FileName & "!$B$32:$" & ColumnName & "$32"
+    ActiveChart.FullSeriesCollection(7).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(7).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$37"
+    TempSeriesValue = "=" & FileName & "!$B$37:$" & ColumnName & "$37"
+    ActiveChart.FullSeriesCollection(8).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(8).Values = TempSeriesValue
+        
+    TempSeriesValue = "=" & FileName & "!$B$1:$" & ColumnName & "$1"
+    ActiveChart.FullSeriesCollection(1).XValues = TempSeriesValue
+
+With ActiveChart.Parent
+    .Top = Range("W21").Top
+    .Left = Range("W21").Left
+End With
+
+End With
+
+Sheetname.Shapes.AddChart.Select
+'Chart for All data for each Supplier
+With ActiveChart
+    ActiveChart.ChartType = xlLineMarkers
+    ActiveChart.HasTitle = True
+    ActiveChart.ChartTitle.Text = FileName
+   
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$54"
+    TempSeriesValue = "=" & FileName & "!$B$54:$" & ColumnName & "$54"
+    ActiveChart.FullSeriesCollection(1).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(1).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$55"
+    TempSeriesValue = "=" & FileName & "!$B$55:$" & ColumnName & "$55"
+    ActiveChart.FullSeriesCollection(2).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(2).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$56"
+    TempSeriesValue = "=" & FileName & "!$B$56:$" & ColumnName & "$56"
+    ActiveChart.FullSeriesCollection(3).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(3).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$57"
+    TempSeriesValue = "=" & FileName & "!$B$57:$" & ColumnName & "$57"
+    ActiveChart.FullSeriesCollection(4).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(4).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$58"
+    TempSeriesValue = "=" & FileName & "!$B$58:$" & ColumnName & "$58"
+    ActiveChart.FullSeriesCollection(5).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(5).Values = TempSeriesValue
+    
+    TempSeriesValue = "=" & FileName & "!$B$1:$" & ColumnName & "$1"
+    ActiveChart.FullSeriesCollection(1).XValues = TempSeriesValue
+    
+With ActiveChart.Parent
+    .Top = Range("W37").Top
+    .Left = Range("W37").Left
+End With
+
+End With
+
+Sheetname.Shapes.AddChart.Select
+'Chart for SWP Only data for each module
+With ActiveChart
+    ActiveChart.ChartType = xlLineMarkers
+    ActiveChart.HasTitle = True
+    ActiveChart.ChartTitle.Text = FileName & " SWP Only"
+   
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$2"
+    TempSeriesValue = "=" & FileName & "!$B$5:$" & ColumnName & "$5"
+    ActiveChart.FullSeriesCollection(1).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(1).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$7"
+    TempSeriesValue = "=" & FileName & "!$B$10:$" & ColumnName & "$10"
+    ActiveChart.FullSeriesCollection(2).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(2).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$12"
+    TempSeriesValue = "=" & FileName & "!$B$15:$" & ColumnName & "$15"
+    ActiveChart.FullSeriesCollection(3).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(3).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$17"
+    TempSeriesValue = "=" & FileName & "!$B$20:$" & ColumnName & "$20"
+    ActiveChart.FullSeriesCollection(4).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(4).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$22"
+    TempSeriesValue = "=" & FileName & "!$B$25:$" & ColumnName & "$25"
+    ActiveChart.FullSeriesCollection(5).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(5).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$27"
+    TempSeriesValue = "=" & FileName & "!$B$30:$" & ColumnName & "$30"
+    ActiveChart.FullSeriesCollection(6).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(6).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$32"
+    TempSeriesValue = "=" & FileName & "!$B$35:$" & ColumnName & "$35"
+    ActiveChart.FullSeriesCollection(7).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(7).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$37"
+    TempSeriesValue = "=" & FileName & "!$B$40:$" & ColumnName & "$40"
+    ActiveChart.FullSeriesCollection(8).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(8).Values = TempSeriesValue
+    
+    ActiveChart.SeriesCollection.NewSeries
+    TempSeriesName = "=" & FileName & "!$A$42"
+    TempSeriesValue = "=" & FileName & "!$B$45:$" & ColumnName & "$45"
+    ActiveChart.FullSeriesCollection(9).Name = TempSeriesName
+    ActiveChart.FullSeriesCollection(9).Values = TempSeriesValue
+    
+    TempSeriesValue = "=" & FileName & "!$B$1:$" & ColumnName & "$1"
+    ActiveChart.FullSeriesCollection(1).XValues = TempSeriesValue
+    
+    With ActiveChart.Parent
+    .Top = Range("W5").Top
+    .Left = Range("W5").Left
+End With
+
+End With
+
+End Sub
